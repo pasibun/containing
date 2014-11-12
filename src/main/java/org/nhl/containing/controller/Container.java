@@ -1,23 +1,26 @@
 package org.nhl.containing.controller;
 
+import java.util.Date;
+
 /**
  * Data model for a container.
- * 
+ *
  * @author Ruben Bakker
  */
 public class Container {
-    private int arrivalDate; // Probably change to DateTime format.
+
+    private Date arrivalDate;
     private String arrivalTransportType; // Method of transport through which the container was delivered.
     private String arrivalCompany;
     private String owner;
-    private int departureDate; // Probably change to DateTime format.
+    private Date departureDate;
     private String departureTransportType; // Method of transport through which the container must be dispatched.
     private String departureCompany;
     private float weight; // Weight in kilogrammes.
     private String contents; // What's in the container?
-    
-    public Container(int arrivalDate, String arrivalTransportType, String arrivalCompany, String owner,
-            int departureDate, String departureTransportType, String departureCompany, float weight, String contents) {
+
+    public Container(Date arrivalDate, String arrivalTransportType, String arrivalCompany, String owner,
+            Date departureDate, String departureTransportType, String departureCompany, float weight, String contents) {
         this.arrivalDate = arrivalDate;
         this.arrivalTransportType = arrivalTransportType;
         this.arrivalCompany = arrivalCompany;
