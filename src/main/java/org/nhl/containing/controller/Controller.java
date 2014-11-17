@@ -11,6 +11,6 @@ public class Controller {
 
     public Controller() {
         client = new Communication();
-        client.sendMessage("TEST");
+        //client.sendMessage("TEST");
     }
 }

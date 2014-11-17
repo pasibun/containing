@@ -50,18 +50,21 @@ public class Communication {
      */
     public void listen() {
         try {
-            client = new Socket(serverName, PORT);
+            if (client == null) {
+                client = new Socket(serverName, PORT);
+                sleep(100);
+            }
             System.out.println("Listening to "
                     + client.getRemoteSocketAddress() + "...");
             inFromServer = client.getInputStream();
-            DataInputStream in =
+            DataInputStream input =
                     new DataInputStream(inFromServer);
-            if (in.readUTF() == "") {
-                in.reset();
+            String outputString = input.readUTF();
+            if (outputString == "") {
+                input.reset();
             } else {
-                System.out.println("Recieved string " + in.readUTF() + " from backend system!");
+                System.out.println("Recieved string " + outputString + " from backend system!");
             }
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,6 +106,9 @@ public class Communication {
         }
     }
 
+    /**
+     * This method will be called once and loops until the thread stops.
+     */
     private void update() {
         operation = new Thread(new Runnable() {
             @Override
