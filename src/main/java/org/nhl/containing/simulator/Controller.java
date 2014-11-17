@@ -1,16 +1,14 @@
-package org.nhl.containing.controller;
+package org.nhl.containing.simulator;
 
 /**
  * Central logic controller.
- *
- * @author TRJMM
+ * 
+ * @author Ruben Bakker
  */
 public class Controller {
-
-    private Communication client;
-
+    private Thread client;
     public Controller() {
         client = new Communication();
-        client.sendMessage("TEST");
+        client.start();
     }
 }
