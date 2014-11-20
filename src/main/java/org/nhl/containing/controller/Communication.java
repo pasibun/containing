@@ -5,27 +5,37 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+/*
+ * Commands;
+ * 
+ * OK + [OBJECT] + [OBJECTID] + /OK
+ * 
+ */
 
 /**
  * @author TRJMM Used to communicate with the Backend system
  */
 public class Communication {
 
-    private enum statusEnum {
+    private enum Status {
 
         LISTEN, SENDING, INITIALIZE, DISPOSE
     };
-    private statusEnum status;
+    private Status status;
     private Socket client;
     private InputStream inFromServer;
     private DataOutputStream out;
     private final int PORT = 6666;
     private final String serverName = "localhost";
     private Thread operation;
+    private String commando = "";
 
     public Communication() {
-        status = status.INITIALIZE;
-        update();
+        status = Status.INITIALIZE;
+    }
+
+    public String getCommando() {
+        return commando;
     }
 
     /**
@@ -40,7 +50,6 @@ public class Communication {
             System.out.println(" Just connected to "
                     + client.getRemoteSocketAddress());
         } catch (IOException e) {
-            e.printStackTrace();
         }
         sleep(1000);
     }
@@ -59,14 +68,14 @@ public class Communication {
             inFromServer = client.getInputStream();
             DataInputStream input =
                     new DataInputStream(inFromServer);
-            String outputString = input.readUTF();
-            if (outputString == "") {
+            commando = input.readUTF();
+            if (commando.equals("")) {
                 input.reset();
+                commando = "";
             } else {
-                System.out.println("Recieved string " + outputString + " from backend system!");
+                System.out.println("Recieved string " + commando + " from backend system!");
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -76,7 +85,7 @@ public class Communication {
      * @param message The message
      */
     public void sendMessage(String message) {
-        status = status.SENDING;
+        status = Status.SENDING;
 
         try {
             if (client == null) {
@@ -89,9 +98,8 @@ public class Communication {
             System.out.println("Sent message " + message + " to the Backend system!");
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
-        status = status.LISTEN;
+        status = Status.LISTEN;
     }
 
     /**
@@ -100,16 +108,15 @@ public class Communication {
     public void stopClient() {
         try {
             client.close();
-            status = status.DISPOSE;
+            status = Status.DISPOSE;
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     /**
      * This method will be called once and loops until the thread stops.
      */
-    private void update() {
+    public void Start() {
         operation = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -118,15 +125,15 @@ public class Communication {
                         switch (status) {
                             case INITIALIZE:
                                 startClient();
-                                status = status.LISTEN;
+                                status = Status.LISTEN;
                                 break;
                             case LISTEN:
                                 listen();
-                                status = status.LISTEN;
+                                status = Status.LISTEN;
                                 break;
                             case SENDING:
                                 sleep(100);
-                                status = status.SENDING;
+                                status = Status.SENDING;
                                 break;
                             case DISPOSE:
                                 operation.stop();

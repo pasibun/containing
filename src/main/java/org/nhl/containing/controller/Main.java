@@ -18,6 +18,7 @@ public class Main extends SimpleApplication {
         //Main app = new Main();
         //app.start();
         Controller controller = new Controller();
+        controller.Start();
     }
 
     @Override

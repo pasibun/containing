@@ -11,6 +11,9 @@ public class Controller {
 
     public Controller() {
         client = new Communication();
-        //client.sendMessage("TEST");
+    }
+
+    public void Start() {
+        client.Start();
     }
 }
