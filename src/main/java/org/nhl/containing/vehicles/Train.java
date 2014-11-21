@@ -12,6 +12,9 @@ public class Train extends Transporter {
     private AssetManager assetManager;
     private int numberOfWagons;
     private int wagonZAxis = -11;
+    private Spatial nextWagon;
+    private Spatial train;
+    private Spatial wagon;
 
     public Train(AssetManager assetManager, int numberOfWagons) {
         this.assetManager = assetManager;
@@ -23,19 +26,22 @@ public class Train extends Transporter {
      * Initialize a train.
      */
     public void initTrain() {
-
         // Load a model.
-        Spatial train = assetManager.loadModel("Models/medium/train/train.j3o");
+        train = assetManager.loadModel("Models/medium/train/train.j3o");
         this.attachChild(train);
 
         //Load wagons.
-        Spatial wagon = assetManager.loadModel("Models/medium/train/wagon.j3o");
+        wagon = assetManager.loadModel("Models/medium/train/wagon.j3o");
 
         for (int i = 0; i < numberOfWagons; i++) {
-            Spatial nextWagon = wagon.clone();
+            nextWagon = wagon.clone();
             nextWagon.setLocalTranslation(0, 0, wagonZAxis);
             this.attachChild(nextWagon);
             wagonZAxis -= 15;
         }
     }
+
+    public Spatial getWagon() {
+        return wagon;
+    }   
 }
