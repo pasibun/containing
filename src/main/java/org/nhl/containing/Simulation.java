@@ -7,6 +7,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Spatial;
 import org.nhl.containing.cranes.DockingCrane;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Box;
+import org.nhl.containing.vehicles.Boat;
+import org.nhl.containing.vehicles.Lorry;
 import org.nhl.containing.vehicles.Train;
 
 /**
@@ -15,6 +19,12 @@ import org.nhl.containing.vehicles.Train;
  * @author normenhansen
  */
 public class Simulation extends SimpleApplication {
+
+    private enum Status {
+
+        CONTAINER, BOAT, LORRY, TRAIN
+    };
+    private Simulation.Status choice;
 
     @Override
     public void simpleInitApp() {
@@ -83,6 +93,28 @@ public class Simulation extends SimpleApplication {
         //TODO: add render code
     }
 
+    private void createObject() {
+        try {
+            switch (choice) {
+                case CONTAINER:
+                    Container c = new Container();
+                    break;
+                case BOAT:
+                    Boat b = new Boat();
+                    break;
+                case LORRY:
+                    Lorry l = new Lorry();
+                    break;
+                case TRAIN:
+                    Train t = new Train();
+                    break;
+
+            }
+
+        } catch (Throwable e) {
+        }
+    }
+    
     public void getData() {
     }
 
