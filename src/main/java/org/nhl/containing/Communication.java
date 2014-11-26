@@ -1,21 +1,22 @@
 package org.nhl.containing;
- 
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import javax.xml.parsers.*;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 import java.io.*;
- 
+
 /**
  * @author TRJMM Used to communicate with the Backend system. See wiki for all
  * the commands
  */
 public class Communication {
- 
+
+    private static final int PORT = 6666;
+    private static final String serverName = "localhost";
     private String containerIso;
     private String containerOwner;
     private String transportType;
@@ -23,34 +24,32 @@ public class Communication {
     private String destinationName;
     private String speed;
     private int maxValueContainers = 4;
- 
+
     private enum Status {
- 
+
         LISTEN, SENDING, INITIALIZE, DISPOSE
     };
- 
+
     private enum Command {
- 
+
         Create, Move, Dispose, LastMessage
     };
     private Command command;
     private Status status;
     private Socket client;
-    private InputStream inFromServer;
     private DataOutputStream out;
-    private final int PORT = 6666;
-    private final String serverName = "localhost";
+    private DataInputStream input;
     private Thread operation;
     private String Output = "";
- 
+
     public Communication() {
         status = Status.INITIALIZE;
     }
- 
+
     public String getOutput() {
         return Output;
     }
- 
+
     public Command getCommand() {
         return command;
     }
@@ -76,19 +75,17 @@ public class Communication {
      */
     private void startClient() {
         try {
- 
-            System.out.println("Connecting to " + serverName
-                    + " on port " + PORT);
+
+            System.out.println("Connecting to " + serverName + " on port " + PORT);
             client = new Socket(serverName, PORT);
-            System.out.println(" Just connected to "
-                    + client.getRemoteSocketAddress());
+            System.out.println(" Just connected to " + client.getRemoteSocketAddress());
         } catch (IOException e) {
             System.out.println("SERVER NOT FOUND! MAKE SURE THE SERVER IS ONLINE! RECONNECTING...");
             status = Status.INITIALIZE;
         }
         sleep(1000);
     }
- 
+
     /**
      * Listens for input from the backend system
      */
@@ -98,13 +95,10 @@ public class Communication {
                 client = new Socket(serverName, PORT);
                 sleep(100);
             }
-            System.out.println("Listening to "
-                    + client.getRemoteSocketAddress() + "...");
-            inFromServer = client.getInputStream();
-            DataInputStream input =
-                    new DataInputStream(inFromServer);
+            System.out.println("Listening to " + client.getRemoteSocketAddress() + "...");
+            input = new DataInputStream(client.getInputStream());
             Output = input.readUTF();
-            if (Output.equals("")) {
+            if (Output.length() == 0) {
                 input.reset();
                 Output = "";
             } else {
@@ -115,8 +109,9 @@ public class Communication {
             System.out.println("SERVER NOT FOUND! MAKE SURE THE SERVER IS ONLINE! RECONNECTING...");
             status = Status.INITIALIZE;
         }
+        sleep(3000);
     }
- 
+
     /**
      * Tries to decode the incoming XML message and splits it within attributes
      * of this class.
@@ -130,16 +125,17 @@ public class Communication {
             DocumentBuilder db = dbf.newDocumentBuilder();
             InputSource is = new InputSource();
             is.setCharacterStream(new StringReader(xmlMessage));
- 
+
             Document doc = db.parse(is);
- 
+
             NodeList nodes = doc.getElementsByTagName("LastMessage");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
+            int nodesDepth = nodes.getLength();
+            if (nodesDepth > 0) {
+                for (int i = 0; i < nodesDepth; i++) {
                     Element element = (Element) nodes.item(i);
- 
-                    NodeList numberOfContainers = element.getElementsByTagName("numberOfContainers");
-                    Element line = (Element) numberOfContainers.item(0);
+
+                    NodeList nodeList = element.getElementsByTagName("numberOfContainers");
+                    Element line = (Element) nodeList.item(0);
                     maxValueContainers = Integer.parseInt(getCharacterDataFromElement(line));
                     System.out.println("numberOfContainers: " + maxValueContainers);
                 }
@@ -151,23 +147,24 @@ public class Communication {
                 speed = null;
                 command = Command.LastMessage;
             }
- 
+
             nodes = doc.getElementsByTagName("Create");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
+            nodesDepth = nodes.getLength();
+            if (nodesDepth > 0) {
+                for (int i = 0; i < nodesDepth; i++) {
                     Element element = (Element) nodes.item(i);
- 
+
                     NodeList nodeList = element.getElementsByTagName("iso");
                     Element line = (Element) nodeList.item(0);
                     containerIso = getCharacterDataFromElement(line);
                     System.out.println("ISO: " + containerIso);
- 
- 
+
+
                     nodeList = element.getElementsByTagName("owner");
                     line = (Element) nodeList.item(0);
                     containerOwner = getCharacterDataFromElement(line);
                     System.out.println("Owner: " + containerOwner);
- 
+
                     nodeList = element.getElementsByTagName("arrivalTransportType");
                     line = (Element) nodeList.item(0);
                     transportType = getCharacterDataFromElement(line);
@@ -178,22 +175,23 @@ public class Communication {
                 speed = null;
                 command = Command.Create;
             }
- 
+
             nodes = doc.getElementsByTagName("Move");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
+            nodesDepth = nodes.getLength();
+            if (nodesDepth > 0) {
+                for (int i = 0; i < nodesDepth; i++) {
                     Element element = (Element) nodes.item(i);
- 
+
                     NodeList nodeList = element.getElementsByTagName("objectName");
                     Element line = (Element) nodeList.item(0);
                     objectName = getCharacterDataFromElement(line);
                     System.out.println("objectName: " + objectName);
- 
+
                     nodeList = element.getElementsByTagName("destinationName");
                     line = (Element) nodeList.item(0);
                     destinationName = getCharacterDataFromElement(line);
                     System.out.println("destinationName: " + destinationName);
- 
+
                     nodeList = element.getElementsByTagName("speed");
                     line = (Element) nodeList.item(0);
                     speed = getCharacterDataFromElement(line);
@@ -204,12 +202,13 @@ public class Communication {
                 transportType = null;
                 command = Command.Move;
             }
- 
+
             nodes = doc.getElementsByTagName("Dispose");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
+            nodesDepth = nodes.getLength();
+            if (nodesDepth > 0) {
+                for (int i = 0; i < nodesDepth; i++) {
                     Element element = (Element) nodes.item(i);
- 
+
                     NodeList nodeList = element.getElementsByTagName("objectName");
                     Element line = (Element) nodeList.item(0);
                     objectName = getCharacterDataFromElement(line);
@@ -227,7 +226,7 @@ public class Communication {
             e.printStackTrace();
         }
     }
- 
+
     /**
      * Gets the characterdata from the specified element
      */
@@ -239,7 +238,7 @@ public class Communication {
         }
         return "?";
     }
- 
+
     /**
      * Sends a message to the backend system
      *
@@ -247,7 +246,7 @@ public class Communication {
      */
     public void sendMessage(String message) {
         status = Status.SENDING;
- 
+
         try {
             if (client == null) {
                 client = new Socket(serverName, PORT);
@@ -257,20 +256,26 @@ public class Communication {
             out = new DataOutputStream(client.getOutputStream());
             out.writeUTF(message);
             System.out.println("Sent message " + message + " to the Backend system!");
- 
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         status = Status.LISTEN;
     }
- 
+
     /**
      * Stops the client and stops this thread
      */
     public void stopClient() {
         operation = null;
+
+        try {
+            client.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
- 
+
     /**
      * This method will be called once and loops until the thread stops.
      */
@@ -297,7 +302,7 @@ public class Communication {
                             case DISPOSE:
                                 break;
                         }
- 
+
                     } catch (Throwable e) {
                         e.printStackTrace();
                     }
@@ -307,7 +312,7 @@ public class Communication {
         operation.setName("Simulation Communicator");
         operation.start();
     }
- 
+
     /**
      * Sleep this thread we are working with for x milliseconds
      *
