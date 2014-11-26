@@ -9,11 +9,12 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Spatial;
+import com.jme3.util.SkyFactory;
+import com.jme3.water.SimpleWaterProcessor;
 import java.util.ArrayList;
 import java.util.List;
 import org.nhl.containing.areas.BoatArea;
@@ -208,8 +209,34 @@ public class Simulation extends SimpleApplication {
         initLighting();
         initAreas();
         initPlatform();
+        initWater();
+    }
+    
+    /**
+     * Initialize water.
+     */
+    private void initWater(){
+        // Skybox for waterreflections.
+        rootNode.attachChild(SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", false));
+        
+        // Create water.
+        SimpleWaterProcessor waterProcessor = new SimpleWaterProcessor(assetManager);
+        waterProcessor.setRenderSize(32,32);
+        waterProcessor.setWaveSpeed(0.01f);
+        waterProcessor.setReflectionScene(rootNode);
+        viewPort.addProcessor(waterProcessor);
+        
+        // A spatial to display the water on.
+        Spatial waterPlane=(Spatial)  assetManager.loadModel("Models/WaterTest/WaterTest.mesh.xml");
+        waterPlane.setMaterial(waterProcessor.getMaterial());
+        waterPlane.setLocalScale(1024, 1, 1024);
+        waterPlane.setLocalTranslation(0, -2, 0);
+        rootNode.attachChild(waterPlane);
     }
 
+    /**
+     * Initialize lightsource.
+     */
     private void initLighting() {
         // Light pointing diagonal from the top right to the bottom left.
         DirectionalLight light = new DirectionalLight();
@@ -224,6 +251,9 @@ public class Simulation extends SimpleApplication {
         rootNode.addLight(secondLight);
     }
 
+    /**
+     * Initialize areas for that are used on the platform.
+     */
     private void initAreas() {
         // Add the TrainArea.
         TrainArea trainArea = new TrainArea(assetManager, 4);
@@ -258,6 +288,9 @@ public class Simulation extends SimpleApplication {
         rootNode.attachChild(lorryStorageArea);
     }
 
+    /**
+     * Initialize a platform for the scene.
+     */
     private void initPlatform() {
         // Platform for the scene.
         Spatial platform = assetManager.loadModel("Models/platform/platform.j3o");
