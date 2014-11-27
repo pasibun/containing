@@ -1,28 +1,21 @@
 package org.nhl.containing.communication;
 
-import org.nhl.containing.communication.SendRunnable;
-import org.nhl.containing.communication.ListenRunnable;
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
  * Client.
  */
 public class Client implements Runnable {
+
     private Socket socket;
     private final int portNumber = 6666;
     private final String serverName = "localhost";
-
-    
-
     private ListenRunnable listenRunnable;
     private SendRunnable sendRunnable;
-
     private boolean running;
 
     public Client() {
-
     }
 
     @Override
@@ -56,6 +49,7 @@ public class Client implements Runnable {
                     this.stop();
                 }
                 System.out.println("Still alive");
+                writeMessage("TESTINGG");
             } catch (Throwable e) {
                 e.printStackTrace();
             }

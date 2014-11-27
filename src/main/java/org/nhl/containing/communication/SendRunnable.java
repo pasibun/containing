@@ -1,17 +1,15 @@
 package org.nhl.containing.communication;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.Buffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
  */
 public class SendRunnable implements Runnable {
+
     PrintWriter out;
     ConcurrentLinkedQueue<String> queue;
-
     private boolean running;
 
     public SendRunnable(PrintWriter out) {
@@ -34,7 +32,7 @@ public class SendRunnable implements Runnable {
                 }
             } else {
                 // Send outputLine to client
-                out.write(outputLine);
+                out.println(outputLine);
                 System.out.println("Sent " + outputLine);
             }
         }
