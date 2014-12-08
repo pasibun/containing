@@ -1,8 +1,5 @@
 package org.nhl.containing.communication;
 
-
-import java.lang.String;
-
 /**
  *  A data class used by the xml decoder
  *
@@ -11,7 +8,7 @@ public class Message {
 
     public enum Command {
 
-    Create, Move, Dispose, LastMessage
+    Create, Move, Dispose, LastMessage, TransportType
 }
     private int maxValueContainers;
     private String containerIso;
@@ -24,6 +21,7 @@ public class Message {
     private int xLoc;
     private int yLoc;
     private int zLoc;
+    private int id;
 
     public int getMaxValueContainers() {
         return maxValueContainers;
@@ -112,4 +110,14 @@ public class Message {
     public void setzLoc(int zLoc) {
         this.zLoc = zLoc;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
 }
