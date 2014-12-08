@@ -83,7 +83,7 @@ public class Xml {
 
 
                                             message = new Message();
-                                            element = (Element) attributes.item(k);
+                                            element = (Element) attributes.item(l);
                                             nodeList = element.getElementsByTagName("iso");
                                             line = (Element) nodeList.item(0);
                                             message.setContainerIso(getCharacterDataFromElement(line));
