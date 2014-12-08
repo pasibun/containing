@@ -64,12 +64,12 @@ public class Xml {
                                 for (int k = 0; k < createAttributes.getLength(); k++) {
                                     Message message = new Message();
 
-                                    element = (Element) attributes.item(k);
+                                    element = (Element) createAttributes.item(k);
                                     NodeList nodeList = element.getElementsByTagName("type");
                                     Element line = (Element) nodeList.item(0);
                                     message.setTransportType(getCharacterDataFromElement(line));
 
-                                    element = (Element) attributes.item(k);
+                                    element = (Element) createAttributes.item(k);
                                     nodeList = element.getElementsByTagName("identifier");
                                     line = (Element) nodeList.item(0);
                                     message.setId(Integer.parseInt(getCharacterDataFromElement(line)));
