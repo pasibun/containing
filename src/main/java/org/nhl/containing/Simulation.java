@@ -140,18 +140,20 @@ public class Simulation extends SimpleApplication {
      * vehicles.
      */
     public void msgCheck() {
-        String incoming = client.getMessage();
-        if (incoming == null) {
-            return;
-        }
-        
-        incomingMessages.addAll(Xml.decodeXMLMessage(incoming));
-        for (Message msg : incomingMessages) {
-            if (msg.getCommand() == Command.Create) {
-                createContainer(msg);
+        if (client.hasListener()) {
+            String incoming = client.getMessage();
+            if (incoming == null) {
+                return;
             }
+
+            incomingMessages.addAll(Xml.decodeXMLMessage(incoming));
+            for (Message msg : incomingMessages) {
+                if (msg.getCommand() == Command.Create) {
+                    createContainer(msg);
+                }
+            }
+            sortContainers();
         }
-        sortContainers();
     }
 
     private void createContainer(Message msg) {
@@ -204,8 +206,7 @@ public class Simulation extends SimpleApplication {
             rootNode.attachChild(t);
             sendOkMessageTrain(t);
         }
-        for (int i = 0 ; i < totalLorryList.size() ; i++)
-        {
+        for (int i = 0; i < totalLorryList.size(); i++) {
             totalLorryList.get(i).move(true, i);
             sendOkMessageLorry(totalLorryList.get(i));
         }
@@ -283,8 +284,8 @@ public class Simulation extends SimpleApplication {
         agvPath.addWayPoint(new Vector3f(330, 0, 136));
         //waypoint B
         agvPath.addWayPoint(new Vector3f(580, 0, 135));
-        
-        
+
+
         agvPath.setCurveTension(0.1f);
         // set the speed and direction of the AGV using motioncontrol
         agvmotionControl.setDirectionType(MotionEvent.Direction.PathAndRotation);
@@ -402,11 +403,11 @@ public class Simulation extends SimpleApplication {
         };
         inputManager.addListener(acl, "debugmode");
     }
-    
+
     /**
      * Method to see cranes in action!
      */
-    private void testMethodCranes(){
+    private void testMethodCranes() {
         //TC test
         for (int i = 0; i < 15; i++) {
             trainContainerList.add(new Container(assetManager, "TEST CONTAINER", "8-9912", "trein", 0, 0, 0));
@@ -430,8 +431,8 @@ public class Simulation extends SimpleApplication {
         rootNode.attachChild(container1);
         trainStorageArea.getStorageCranes().get(0).storageToAgv(container1, agv2);
         //TruckCrane
-        Lorry lorry1 = new Lorry(assetManager, new Container(assetManager, "TEST CONTAINER", "8-9912", "vrachtwagen", 0, 0, 0) );
-        lorry1.setLocalTranslation(300,0,170);
+        Lorry lorry1 = new Lorry(assetManager, new Container(assetManager, "TEST CONTAINER", "8-9912", "vrachtwagen", 0, 0, 0));
+        lorry1.setLocalTranslation(300, 0, 170);
         rootNode.attachChild(lorry1);
         Agv agv4 = new Agv(assetManager);
         agv4.rotate(0, 0, 0);
@@ -440,25 +441,25 @@ public class Simulation extends SimpleApplication {
         lorryArea.getTruckCranes().get(0).truckToAgv(lorry1.getChild(1), agv4);
         //DC test
         Container container2 = new Container(assetManager, "TEST CONTAINER", "8-0002", "binnenschip", 0, 0, 0);
-        container2.setLocalTranslation(-325,0,0);
+        container2.setLocalTranslation(-325, 0, 0);
         rootNode.attachChild(container2);
         Agv agv3 = new Agv(assetManager);
         agv3.rotate(0, 0, 0);
         agv3.setLocalTranslation(-285, 0, 20);
         rootNode.attachChild(agv3);
         boatArea.dockingCranes.get(0).boatToAgv(container2, agv3);
-        
+
         //DC
         Container container5 = new Container(assetManager, "TEST CONTAINER", "8-0002", "binnenschip", 0, 0, 0);
-        container5.setLocalTranslation(-200,0,240);
-        container5.rotate(0, (float)Math.PI / 2, 0);
+        container5.setLocalTranslation(-200, 0, 240);
+        container5.rotate(0, (float) Math.PI / 2, 0);
         rootNode.attachChild(container5);
-        
+
         Agv agv5 = new Agv(assetManager);
-        agv5.rotate(0, (float)Math.PI / 2, 0);
+        agv5.rotate(0, (float) Math.PI / 2, 0);
         agv5.setLocalTranslation(-180, 0, 140);
         rootNode.attachChild(agv5);
         inlandBoatArea.dockingCranes.get(0).boatToAgv(container5, agv5);
-        
+
     }
 }
