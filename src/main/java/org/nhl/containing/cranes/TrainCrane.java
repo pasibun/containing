@@ -143,14 +143,14 @@ public class TrainCrane extends Crane {
         switch (direction) {
             case AGVTOTRAIN:
                 cranePath.addWayPoint(getLocalTranslation());
-                cranePath.addWayPoint(new Vector3f((container.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x, 0, 0));
+                cranePath.addWayPoint(new Vector3f((container.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x + 0.01f, 0, 0));
 
                 containerPathUp.addWayPoint(new Vector3f(0, 1, 6));
                 containerPathUp.addWayPoint(new Vector3f(0, 5, 6));
                 containerPathUp.addWayPoint(new Vector3f(0, 5, 0));
 
                 newCranePath.addWayPoint(new Vector3f((container.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x, 0, getLocalTranslation().z));
-                newCranePath.addWayPoint(new Vector3f((wagon.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x, 0, getLocalTranslation().z));
+                newCranePath.addWayPoint(new Vector3f((wagon.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x + 0.01f, 0, getLocalTranslation().z));
 
                 containerPathDown.addWayPoint(new Vector3f(0, 5, 0));
                 containerPathDown.addWayPoint(new Vector3f(0, 1, 0));
@@ -158,14 +158,14 @@ public class TrainCrane extends Crane {
 
             case TRAINTOAGV:
                 cranePath.addWayPoint(getLocalTranslation());
-                cranePath.addWayPoint(new Vector3f((container.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x, 0, 0));
+                cranePath.addWayPoint(new Vector3f((container.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x + 0.01f, 0, 0));
 
                 containerPathUp.addWayPoint(new Vector3f(0, 1, 0));
                 containerPathUp.addWayPoint(new Vector3f(0, 5, 0));
                 containerPathUp.addWayPoint(new Vector3f(0, 5, 6));
 
                 newCranePath.addWayPoint(new Vector3f((container.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x, 0, getLocalTranslation().z));
-                newCranePath.addWayPoint(new Vector3f((agv.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x, 0, getLocalTranslation().z));
+                newCranePath.addWayPoint(new Vector3f((agv.getWorldTranslation().x - getWorldTranslation().x) + getLocalTranslation().x + 0.01f, 0, getLocalTranslation().z));
 
                 containerPathDown.addWayPoint(new Vector3f(0, 5, 6));
                 containerPathDown.addWayPoint(new Vector3f(0, 1, 6));
