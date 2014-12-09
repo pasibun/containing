@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Client.
@@ -45,7 +47,12 @@ public class Client implements Runnable {
             }
         } catch (IOException e) {
             System.out.println("SERVER NOT FOUND! Make sure the server is running! Now trying to reconnect...");
-            run();
+            try {
+                Thread.sleep(2500);
+                run();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
 
 
