@@ -17,6 +17,7 @@ public class Client implements Runnable {
     private ListenRunnable listenRunnable;
     private SendRunnable sendRunnable;
     private boolean running;
+    private boolean calledStop;
 
     public Client() {
     }
@@ -24,26 +25,30 @@ public class Client implements Runnable {
     @Override
     public void run() {
         try {
-            // Open up the socket.
-            socket = new Socket(serverName, portNumber);
+            if (calledStop) { //Ugly fix to stop the reconnect-loop when there's no connection at all
+                stop();
+            } else {
+                // Open up the socket.
+                socket = new Socket(serverName, portNumber);
 
-            listenRunnable = new ListenRunnable(new BufferedReader(new InputStreamReader(socket.getInputStream())));
-            sendRunnable = new SendRunnable(new PrintWriter(socket.getOutputStream(), true));
+                listenRunnable = new ListenRunnable(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+                sendRunnable = new SendRunnable(new PrintWriter(socket.getOutputStream(), true));
 
-            Thread listenThread = new Thread(listenRunnable);
-            listenThread.setName("ListenThread");
-            Thread sendThread = new Thread(sendRunnable);
-            sendThread.setName("SendThread");
-            
-            listenThread.start();
-            sendThread.start();
-            running = true;
+                Thread listenThread = new Thread(listenRunnable);
+                listenThread.setName("ListenThread");
+                Thread sendThread = new Thread(sendRunnable);
+                sendThread.setName("SendThread");
+
+                listenThread.start();
+                sendThread.start();
+                running = true;
+            }
         } catch (IOException e) {
             System.out.println("SERVER NOT FOUND! Make sure the server is running! Now trying to reconnect...");
             run();
         }
 
-        
+
         while (running) {
             try {
                 // Do nothing.
@@ -85,6 +90,7 @@ public class Client implements Runnable {
             }
         }
         running = false;
+        calledStop = true;
     }
 
     /**
