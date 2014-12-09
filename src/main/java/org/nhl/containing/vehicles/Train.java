@@ -20,6 +20,7 @@ public class Train extends Transporter {
     private int wagonZAxis = -11;
     private float speed = 0.8f;
     private ArrayList<Container> trainContainerList;
+    private ArrayList<Node> trainWagons = new ArrayList();
     private MotionPath path;
 
     public Train(AssetManager assetManager, ArrayList<Container> trainContainerList) {
@@ -32,7 +33,7 @@ public class Train extends Transporter {
     /**
      * Initialize a train.
      */
-    public void initTrain() {
+    private void initTrain() {
         // Load a model.
         Node train = (Node)assetManager.loadModel("Models/medium/train/train.j3o");
         this.attachChild(train);
@@ -42,12 +43,11 @@ public class Train extends Transporter {
 
         for (int i = 0; i < trainContainerList.size(); i++) {
             Node nextWagon = (Node) wagon.clone();
-            nextWagon.setLocalTranslation(0, 0, wagonZAxis);
+            trainWagons.add(nextWagon);
+            trainWagons.get(i).setLocalTranslation(0, 0, wagonZAxis);
             trainContainerList.get(i).setLocalTranslation(0, 1, 0);
-            nextWagon.attachChild(trainContainerList.get(i));
-
-            this.attachChild(nextWagon);
-
+            trainWagons.get(i).attachChild(trainContainerList.get(i));
+            this.attachChild(trainWagons.get(i));
             wagonZAxis -= 15;
         }
     }
@@ -83,5 +83,9 @@ public class Train extends Transporter {
             info += "Waypoint " + (i+1) + ": " + path.getWayPoint(i) + " ";
         }
         return info + "\n";
+    }
+    
+    public ArrayList<Node> getTrainWagons(){
+        return trainWagons;
     }
 }
