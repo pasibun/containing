@@ -1,27 +1,24 @@
 package org.nhl.containing.communication;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * Client.
  */
 public class Client implements Runnable {
+
     private final int portNumber = 6666;
     private final String serverName = "localhost";
     private Socket socket;
     private ListenRunnable listenRunnable;
     private SendRunnable sendRunnable;
-
     private boolean running;
 
     public Client() {
-
     }
 
     @Override
@@ -37,15 +34,16 @@ public class Client implements Runnable {
             listenThread.setName("ListenThread");
             Thread sendThread = new Thread(sendRunnable);
             sendThread.setName("SendThread");
-
+            
             listenThread.start();
             sendThread.start();
+            running = true;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("SERVER NOT FOUND! Make sure the server is running! Now trying to reconnect...");
+            run();
         }
 
-        running = true;
-
+        
         while (running) {
             try {
                 // Do nothing.
@@ -54,9 +52,10 @@ public class Client implements Runnable {
             } catch (Throwable e) {
                 e.printStackTrace();
             }
-            if(listenRunnable != null)
-            if (!listenRunnable.isRunning()) {
-                this.stop();
+            if (listenRunnable != null) {
+                if (!listenRunnable.isRunning()) {
+                    this.stop();
+                }
             }
         }
 
@@ -66,38 +65,48 @@ public class Client implements Runnable {
      * Stops the client an thus the listen- and sendrunnables
      */
     public void stop() {
-        if(socket != null)
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        if(listenRunnable != null)
-        try {
-            listenRunnable.stop();
-        } catch (Throwable e) {
+        if (listenRunnable != null) {
+            try {
+                listenRunnable.stop();
+            } catch (Throwable e) {
+            }
         }
-        if(sendRunnable != null)
-        try {
-            sendRunnable.stop();
-        } catch (Throwable e) {
+        if (sendRunnable != null) {
+            try {
+                sendRunnable.stop();
+            } catch (Throwable e) {
+            }
         }
         running = false;
     }
 
     /**
-     * 
-     * 
-     * @return 
+     *
+     *
+     * @return
      */
     public String getMessage() {
         return listenRunnable.getMessage();
     }
 
+    public boolean hasListener() {
+        if (listenRunnable == null || !listenRunnable.isRunning()) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * sends a message to the backend system
-     * 
-     * @param message 
+     *
+     * @param message
      */
     public void writeMessage(String message) {
         sendRunnable.writeMessage("<Simulation>" + message + "</Simulation>");
