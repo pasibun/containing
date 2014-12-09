@@ -163,9 +163,6 @@ public class DockingCrane extends Crane {
     public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
         if (cranePathCounter == wayPointIndex + 1) {
             cranePath.clearWayPoints();
-            System.out.println(container.getWorldTranslation());
-            System.out.println(container.getLocalTranslation());
-            System.out.println(this.getWorldTranslation());
             moveContainer();
             wayPointIndex = 0;
             cranePathCounter = 0;
