@@ -20,6 +20,7 @@ import org.nhl.containing.vehicles.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.nhl.containing.communication.messages.ArriveMessage;
@@ -38,6 +39,8 @@ import org.xml.sax.SAXException;
 public class Simulation extends SimpleApplication {
 
     private List<Transporter> transporterPool;
+    private List<Transporter> transporters;
+    private List<Message> arriveMessages;
     private TrainArea trainArea;
     private LorryArea lorryArea;
     private BoatArea boatArea;
@@ -57,8 +60,10 @@ public class Simulation extends SimpleApplication {
     public Simulation() {
         client = new Client();
         transporterPool = new ArrayList<>();
+        arriveMessages = new ArrayList<>();
+        transporters = new ArrayList<>();
     }
- 
+
     @Override
     public void simpleInitApp() {
         guiFont = assetManager.loadFont("Interface/Fonts/TimesNewRoman.fnt");
@@ -82,6 +87,7 @@ public class Simulation extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         handleMessages();
         updateDate();
+        handleArrival();
     }
 
     @Override
@@ -178,20 +184,27 @@ public class Simulation extends SimpleApplication {
     }
 
     private void handleArriveMessage(ArriveMessage message) {
-        Transporter transporter = null;
-        boolean nobreak = true;
+        boolean exists = false;
 
         for (Transporter poolTransporter : transporterPool) {
             if (poolTransporter.getId() == message.getTransporterId()) {
-                transporter = poolTransporter;
-                nobreak = false;
+                poolTransporter.setProcessingMessageId(message.getId());
+                rootNode.attachChild(poolTransporter);
+                poolTransporter.arrive(message.getDepotIndex());
+                
+                arriveMessages.add(message);
+                
+                exists = true;
                 break;
             }
         }
-        if (nobreak) {
+        if (!exists) {
             throw new IllegalArgumentException("Transporter " + message.getTransporterId()
                     + " does not exist");
         }
+
+
+
         // Tell transporter to *arrive*. Rename move() to arrive(). move() is
         // too ambiguous. move() should probably be an *abstract* method within
         // Transporter, to be actually defined within each of the subclasses.
@@ -219,6 +232,33 @@ public class Simulation extends SimpleApplication {
     private void handleSpeedMessage(SpeedMessage message) {
         speed = message.getSpeed();
         sendOkMessage(message);
+    }
+
+    /**
+     * Checks wether a transporter has arrived and sends back an OK-message to the backend system.
+     */
+    private void handleArrival() {
+         Iterator<Transporter> itrTransporter = transporterPool.iterator();
+        while (itrTransporter.hasNext()) {
+            Transporter poolTransporter = itrTransporter.next();
+            if(poolTransporter.isArrived())
+            {
+                Iterator<Message> itrMessage = arriveMessages.iterator();
+                while(itrMessage.hasNext())
+                { 
+                    Message msg = itrMessage.next();
+                    if(msg.getId() == poolTransporter.getProcessingMessageId())
+                    {
+                        sendOkMessage(msg);
+                        transporters.add(poolTransporter);
+                        itrTransporter.remove();
+                        itrMessage.remove();
+                    }
+                }
+                
+            }
+            
+        }
     }
 
     /**
@@ -283,7 +323,7 @@ public class Simulation extends SimpleApplication {
         //make waypoints visible
         //agvPath.disableDebugShape();
     }
-    
+
     /**
      * Initialises the simulation date.
      */
@@ -299,12 +339,13 @@ public class Simulation extends SimpleApplication {
         currentDate = cal.getTime();
         lastTime = System.currentTimeMillis();
     }
-    
-        /**
+
+    /**
      * Updates the simulation date.
      * <p/>
-     * Compares the time since the last function call to the current time. This is the delta time.
-     * The delta time is added to the simulation date, multiplied by the specified TIME_MULTIPLIER.
+     * Compares the time since the last function call to the current time. This
+     * is the delta time. The delta time is added to the simulation date,
+     * multiplied by the specified TIME_MULTIPLIER.
      */
     private void updateDate() {
         long curTime = System.currentTimeMillis();
@@ -313,10 +354,10 @@ public class Simulation extends SimpleApplication {
         cal.add(Calendar.MILLISECOND, deltaTime * TIME_MULTIPLIER);
         currentDate = cal.getTime();
         lastTime = curTime;
-        
+
         HUD.updateDateText(currentDate);
     }
- 
+
     /**
      * Camera settings of the scene.
      */

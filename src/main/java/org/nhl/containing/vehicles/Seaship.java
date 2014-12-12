@@ -35,6 +35,7 @@ public class Seaship extends Transporter {
         initSeaship();
         initMotionPaths();
     }
+
     /**
      * Initialize a boat.
      */
@@ -56,7 +57,8 @@ public class Seaship extends Transporter {
             e.printStackTrace();
         }
     }
-        /**
+
+    /**
      * Initialize motionpath and motionevent
      */
     private void initMotionPaths() {
@@ -65,8 +67,10 @@ public class Seaship extends Transporter {
         motionControl.setSpeed(speed);
         motionControl.setRotation(new Quaternion().fromAngleNormalAxis((float) Math.PI, Vector3f.UNIT_Y));
     }
+
     /**
      * Lets the seaship arrive
+     *
      * @param location not used
      */
     @Override
@@ -75,8 +79,10 @@ public class Seaship extends Transporter {
         path.addWayPoint(new Vector3f(-750, 0, 500));
         path.addWayPoint(new Vector3f(-330, 0, -20));
         path.setCurveTension(0.3f);
+        path.addListener(this);
         motionControl.play();
     }
+
     /**
      * Makes this seaship depart
      */
@@ -86,9 +92,11 @@ public class Seaship extends Transporter {
         path.addWayPoint(new Vector3f(-330, 0, -20));
         path.addWayPoint(new Vector3f(-345, 0, -300));
         path.setCurveTension(0.3f);
+        path.addListener(this);
         motionControl.play();
     }
-        /**
+
+    /**
      * Debug method, displays object name, speed, amount of containers and it's
      * waypoints.
      *
@@ -114,5 +122,12 @@ public class Seaship extends Transporter {
             info += "Waypoint " + (j + 1) + ": " + path.getWayPoint(j) + " ";
         }
         return info + "\n";
+    }
+
+    @Override
+    public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+        if (wayPointIndex + 1 == path.getNbWayPoints()) {
+            setArrived(true);
+        }
     }
 }

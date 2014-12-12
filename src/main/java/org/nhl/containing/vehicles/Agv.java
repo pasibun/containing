@@ -14,7 +14,7 @@ public class Agv extends Vehicle {
     private Container container;
     private float speed = 0.5f;
     private MotionPath path;
-    
+
     public Agv(AssetManager assetManager, int id) {
         super(id);
         this.assetManager = assetManager;
@@ -30,24 +30,26 @@ public class Agv extends Vehicle {
         Spatial agv = assetManager.loadModel("Models/low/agv/agv.j3o");
         this.attachChild(agv);
     }
+
     /**
      * Method that moves this agv over the given path
+     *
      * @param path character arraylist filled with the waypoints
      */
-    public void move(char[] route){
+    public void move(char[] route) {
         path = new MotionPath();
         MotionEvent motionControl = new MotionEvent(this, path);
         for (char waypoint : route) {
-            switch(waypoint){
+            switch (waypoint) {
                 case 'A':
                     path.addWayPoint(new Vector3f(580, 0, -140));
-                break;
+                    break;
                 case 'B':
                     path.addWayPoint(new Vector3f(580, 0, 135));
-                break;
+                    break;
                 case 'C':
                     path.addWayPoint(new Vector3f(330, 0, -140));
-                break;
+                    break;
                 case 'D':
                     path.addWayPoint(new Vector3f(330, 0, 136));
                     break;
@@ -66,22 +68,25 @@ public class Agv extends Vehicle {
             }
         }
         path.setCurveTension(0.1f);
+        path.addListener(this);
         // set the speed and direction of the AGV using motioncontrol
         motionControl.setDirectionType(MotionEvent.Direction.PathAndRotation);
         motionControl.setRotation(new Quaternion().fromAngleNormalAxis(0, Vector3f.UNIT_Y));
         motionControl.setSpeed(speed);
         motionControl.play();
     }
+
     /**
-     * Debug method, displays object name, speed, amount of containers and it's waypoints.
+     * Debug method, displays object name, speed, amount of containers and it's
+     * waypoints.
+     *
      * @return debug information about the object
      */
-    public String getDebugInfo(){
+    public String getDebugInfo() {
         String info = this.getClass().getSimpleName() + "\nSpeed: " + speed + "\nLocation: " + this.getLocalTranslation() + "\nCarrying: ";
-        if(container != null){
-            info+= "1 Container.\n";
-        }
-        else{
+        if (container != null) {
+            info += "1 Container.\n";
+        } else {
             info += "nothing.\n";
         }
         //get waypoints for the AGV (does not exist in this class yet)
@@ -90,15 +95,24 @@ public class Agv extends Vehicle {
 //        }
         return info + "\n";
     }
-        /**
-         * Gets all created waypoints
-         * @return string with the waypoints
-         */
-        public String getWaypoints(){
+
+    /**
+     * Gets all created waypoints
+     *
+     * @return string with the waypoints
+     */
+    public String getWaypoints() {
         String info = "\nAGV Waypoints: ";
         for (int j = 0; j < path.getNbWayPoints(); j++) {
-        info += "Waypoint " + (j+1) + ": " + path.getWayPoint(j) + " ";
+            info += "Waypoint " + (j + 1) + ": " + path.getWayPoint(j) + " ";
         }
         return info + "\n";
+    }
+
+    @Override
+    public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+        if (wayPointIndex + 1 == path.getNbWayPoints()) {
+            setArrived(true);
+        }
     }
 }

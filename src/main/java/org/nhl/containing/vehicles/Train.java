@@ -19,7 +19,7 @@ public class Train extends Transporter {
     private List<Container> trainContainerList;
     private MotionPath path;
     private MotionEvent motionControl;
-    
+
     public Train(AssetManager assetManager, int id, List<Container> trainContainerList) {
         super(id);
         this.assetManager = assetManager;
@@ -34,7 +34,7 @@ public class Train extends Transporter {
      */
     public void initTrain() {
         // Load a model.
-        Node train = (Node)assetManager.loadModel("Models/low/train/train.j3o");
+        Node train = (Node) assetManager.loadModel("Models/low/train/train.j3o");
         this.attachChild(train);
 
         //Load wagons.
@@ -51,55 +51,73 @@ public class Train extends Transporter {
             wagonZAxis -= 15;
         }
     }
+
     /**
      * Initialize motionpath and motionevent
      */
-    private void initMotionPaths(){
-            path = new MotionPath();
-            motionControl = new MotionEvent(this, path);
-            motionControl.setSpeed(speed);
+    private void initMotionPaths() {
+        path = new MotionPath();
+        motionControl = new MotionEvent(this, path);
+        motionControl.setSpeed(speed);
     }
+
     /**
      * Creates waypoints and lets the vehicle arrive at it's given location
+     *
      * @param location not used
      */
     @Override
-    public void arrive(int location){
-            path.clearWayPoints();
-            path.addWayPoint(new Vector3f(250, 0, -180));
-            path.addWayPoint(new Vector3f(-200, 0, -180));
-            motionControl.play();
+    public void arrive(int location) {
+        path.clearWayPoints();
+        path.addWayPoint(new Vector3f(250, 0, -180));
+        path.addWayPoint(new Vector3f(-200, 0, -180));
+        path.addListener(this);
+        motionControl.play();
     }
+
     /**
-     * 
+     *
      */
     @Override
-    public void depart(){
-            path.clearWayPoints();
-            path.addWayPoint(new Vector3f(-200, 0, -180));
-            path.addWayPoint(new Vector3f(250, 0, -180));
-            motionControl.play();
+    public void depart() {
+        path.clearWayPoints();
+        path.addWayPoint(new Vector3f(-200, 0, -180));
+        path.addWayPoint(new Vector3f(250, 0, -180));
+        path.addListener(this);
+        motionControl.play();
     }
-     /**
-     * Debug method, displays object name, speed, amount of containers and it's waypoints.
+
+    /**
+     * Debug method, displays object name, speed, amount of containers and it's
+     * waypoints.
+     *
      * @return information about this object
      */
-    public String getDebugInfo(){
+    public String getDebugInfo() {
         String info = this.getClass().getSimpleName() + "\nSpeed: " + speed + "\nLocation: " + this.getLocalTranslation() + "\nCarrying: " + trainContainerList.size() + " containers.\n";
         for (int i = 0; i < path.getNbWayPoints(); i++) {
-            info += "Waypoint " + (i+1) + ": " + path.getWayPoint(i) + " ";
+            info += "Waypoint " + (i + 1) + ": " + path.getWayPoint(i) + " ";
         }
         return info + "\n";
     }
+
     /**
      * Returns the waypoint coörds
+     *
      * @return string containing the waypoints
      */
     public String getWaypoints() {
         String info = "\nTrain waypoints ";
         for (int j = 0; j < path.getNbWayPoints(); j++) {
-        info += "Waypoint " + (j+1) + ": " + path.getWayPoint(j) + " ";
+            info += "Waypoint " + (j + 1) + ": " + path.getWayPoint(j) + " ";
         }
         return info + "\n";
+    }
+
+    @Override
+    public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+        if (wayPointIndex + 1 == path.getNbWayPoints()) {
+            setArrived(true);
+        }
     }
 }

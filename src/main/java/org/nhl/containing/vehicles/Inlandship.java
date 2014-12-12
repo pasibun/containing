@@ -92,6 +92,7 @@ public class Inlandship extends Transporter {
                 throw new IllegalArgumentException(location + " is an invalid location");
         }
         path.setCurveTension(0.3f);
+        path.addListener(this);
         motionControl.play();
     }
 
@@ -112,6 +113,7 @@ public class Inlandship extends Transporter {
             path.addWayPoint(new Vector3f(450, 0, 250));
         }
         path.setCurveTension(0.3f);
+        path.addListener(this);
         motionControl.play();
     }
 
@@ -141,5 +143,12 @@ public class Inlandship extends Transporter {
             info += "Waypoint " + (j + 1) + ": " + path.getWayPoint(j) + " ";
         }
         return info + "\n";
+    }
+
+    @Override
+    public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+        if (wayPointIndex + 1 == path.getNbWayPoints()) {
+            setArrived(true);
+        }
     }
 }

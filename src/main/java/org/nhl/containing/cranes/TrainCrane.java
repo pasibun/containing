@@ -98,6 +98,7 @@ public class TrainCrane extends Crane {
             agv.attachChild(container);
             container.rotate(0, (float) Math.PI / 2, 0);
             container.setLocalTranslation(0, 1, 0);
+            setArrived(true);
         }
         
     }

@@ -53,6 +53,7 @@ public class Lorry extends Transporter {
         path.clearWayPoints();
         path.addWayPoint(new Vector3f(566 - (14 * location), 0, 185));
         path.addWayPoint(new Vector3f(566 - (14 * location), 0, 159));
+        path.addListener(this);
         motionControl.play();
     }
     /**
@@ -63,6 +64,7 @@ public class Lorry extends Transporter {
         path.clearWayPoints();
         path.addWayPoint(new Vector3f(this.getLocalTranslation().x, 0, 159));
         path.addWayPoint(new Vector3f(this.getLocalTranslation().x, 0, 185));
+        path.addListener(this);
         motionControl.play();
     }
     /**
@@ -96,5 +98,13 @@ public class Lorry extends Transporter {
             info += "Waypoint " + (j + 1) + ": " + path.getWayPoint(j) + " ";
         }
         return info + "\n";
+    }
+    
+    @Override
+    public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+        if( wayPointIndex + 1 == path.getNbWayPoints())
+        {
+            setArrived(true);
+        }
     }
 }
