@@ -13,7 +13,6 @@ public class Agv extends Vehicle {
     private AssetManager assetManager;
     private Container container;
     private float speed = 0.5f;
-    private MotionPath path;
     MotionEvent motionControl;
 
     public Agv(AssetManager assetManager, int id) {

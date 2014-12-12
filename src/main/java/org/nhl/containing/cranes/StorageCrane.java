@@ -26,8 +26,8 @@ public class StorageCrane extends Crane {
     private int containerPathDownCounter;
     private CraneDirection direction;
 
-    
-    public StorageCrane(AssetManager assetManager, StorageArea storageArea) {
+    public StorageCrane(AssetManager assetManager, int id, StorageArea storageArea) {
+        super(id);
         this.assetManager = assetManager;
         this.storageArea = storageArea;
         initStorageCrane();

@@ -25,7 +25,6 @@ public class Seaship extends Transporter {
     private final int zeyAs = 0;
     private final int zezAs = 160;
     private Spatial boat;
-    private MotionPath path;
     private MotionEvent motionControl;
 
     public Seaship(AssetManager assetManager, int id, List<Container> containerList) {
@@ -75,8 +74,10 @@ public class Seaship extends Transporter {
         path.addWayPoint(new Vector3f(-750, 0, 500));
         path.addWayPoint(new Vector3f(-330, 0, -20));
         path.setCurveTension(0.3f);
+        path.addListener(this);
         motionControl.play();
     }
+
     /**
      * Makes this seaship depart
      */

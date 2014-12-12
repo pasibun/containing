@@ -13,7 +13,6 @@ public class Lorry extends Transporter {
     private float speed = 1f;
     private int lorryZAxis = 11;
     private Container container;
-    private MotionPath path;
     private MotionEvent motionControl;
 
     public Lorry(AssetManager assetManager, int id, Container c) {
@@ -53,8 +52,10 @@ public class Lorry extends Transporter {
         path.clearWayPoints();
         path.addWayPoint(new Vector3f(566 - (14 * location), 0, 185));
         path.addWayPoint(new Vector3f(566 - (14 * location), 0, 159));
+        path.addListener(this);
         motionControl.play();
     }
+
     /**
      * Lets the lorry depart
      */

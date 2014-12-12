@@ -18,7 +18,6 @@ public class Inlandship extends Transporter {
     private List<Container> containerList;
     private BoundingBox boundingBox;
     private Spatial boat;
-    private MotionPath path;
     private MotionEvent motionControl;
 
     public Inlandship(AssetManager assetManager, int id, List<Container> containerList) {
@@ -92,6 +91,7 @@ public class Inlandship extends Transporter {
                 throw new IllegalArgumentException(location + " is an invalid location");
         }
         path.setCurveTension(0.3f);
+        path.addListener(this);
         motionControl.play();
     }
 

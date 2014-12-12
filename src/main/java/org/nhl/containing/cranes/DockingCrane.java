@@ -27,7 +27,8 @@ public class DockingCrane extends Crane {
     private BoatArea.AreaType type;
     private CraneDirection direction;
 
-    public DockingCrane(AssetManager assetManager, BoatArea.AreaType type) {
+    public DockingCrane(AssetManager assetManager, int id, BoatArea.AreaType type) {
+        super(id);
         this.assetManager = assetManager;
         this.type = type;
         initDockingCrane();

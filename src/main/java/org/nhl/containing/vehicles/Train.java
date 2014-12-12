@@ -17,9 +17,8 @@ public class Train extends Transporter {
     private int wagonZAxis = -11;
     private float speed = 0.8f;
     private List<Container> trainContainerList;
-    private MotionPath path;
     private MotionEvent motionControl;
-    
+
     public Train(AssetManager assetManager, int id, List<Container> trainContainerList) {
         super(id);
         this.assetManager = assetManager;

@@ -42,6 +42,8 @@ import org.xml.sax.SAXException;
 public class Simulation extends SimpleApplication {
 
     private List<Transporter> transporterPool;
+    private List<Transporter> transporters;
+    private List<Message> messagePool;
     private TrainArea trainArea;
     private LorryArea lorryArea;
     private BoatArea boatArea;
@@ -62,9 +64,11 @@ public class Simulation extends SimpleApplication {
 
     public Simulation() {
         client = new Client();
-        transporterPool = new ArrayList<>();
+        transporterPool = new ArrayList<Transporter>();
+        transporters = new ArrayList<Transporter>();
+        messagePool = new ArrayList<Message>();
     }
- 
+
     @Override
     public void simpleInitApp() {
         guiFont = assetManager.loadFont("Interface/Fonts/TimesNewRoman.fnt");
@@ -85,6 +89,7 @@ public class Simulation extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
         handleMessages();
+        handleTasksComplete();
         updateDate();
     }
 
@@ -97,6 +102,34 @@ public class Simulation extends SimpleApplication {
     public void destroy() {
         super.destroy();
         client.stop();
+    }
+
+    private void handleTasksComplete() {
+        // Check for transporters. Refactor this to Vehicles/Cranes at some
+        // point.
+        for (Transporter transporter : transporters) {
+            int id = transporter.getProcessingMessageId();
+            if (id > -1 && transporter.isTaskComplete()) {
+                Message message = null;
+                boolean nobreak = true;
+
+                for (Message poolMessage : messagePool) {
+                    if (poolMessage.getId() == id) {
+                        message = poolMessage;
+                        nobreak = false;
+                        break;
+                    }
+                }
+                if (nobreak) {
+                    throw new RuntimeException("Message " + id
+                            + " does not exist");
+                }
+
+                messagePool.remove(message);
+                sendOkMessage(message);
+                transporter.setProcessingMessageId(-1);
+            }
+        }
     }
 
     private void handleMessages() {
@@ -196,6 +229,15 @@ public class Simulation extends SimpleApplication {
             throw new IllegalArgumentException("Transporter " + message.getTransporterId()
                     + " does not exist");
         }
+
+        messagePool.add(message);
+        rootNode.attachChild(transporter);
+        transporter.arrive(message.getDepotIndex());
+        transporter.setProcessingMessageId(message.getId());
+        transporter.setTaskComplete(false);
+        transporterPool.remove(transporter);
+        transporters.add(transporter);
+
         // Tell transporter to *arrive*. Rename move() to arrive(). move() is
         // too ambiguous. move() should probably be an *abstract* method within
         // Transporter, to be actually defined within each of the subclasses.

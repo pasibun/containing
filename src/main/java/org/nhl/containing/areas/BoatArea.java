@@ -37,7 +37,7 @@ public class BoatArea extends Area {
             case SEASHIP:
                 // Add docking cranes to the list and scene.
                 for (int i = 0; i < cranes; i++) {
-                    dockingCranes.add(new DockingCrane(assetManager, this.type));
+                    dockingCranes.add(new DockingCrane(assetManager, -1, this.type));
                     dockingCranes.get(i).setLocalTranslation(0, 0, craneAxis);
                     this.attachChild(dockingCranes.get(i));
                     craneAxis += 18;
@@ -56,7 +56,7 @@ public class BoatArea extends Area {
             case INLANDSHIP:
                 // Add docking cranes to the list and scene.
                 for (int i = 0; i < cranes; i++) {
-                    dockingCranes.add(new DockingCrane(assetManager, this.type));
+                    dockingCranes.add(new DockingCrane(assetManager, -1, this.type));
                     dockingCranes.get(i).setLocalTranslation(craneAxis, 0, 0);
                     dockingCranes.get(i).rotate(0, (float) Math.PI / 2, 0);
                     this.attachChild(dockingCranes.get(i));

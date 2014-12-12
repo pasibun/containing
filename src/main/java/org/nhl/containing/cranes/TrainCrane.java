@@ -19,7 +19,8 @@ public class TrainCrane extends Crane {
     private MotionPath containerPath;
     private MotionPath cranePath;
 
-    public TrainCrane(AssetManager assetManager) {
+    public TrainCrane(AssetManager assetManager, int id) {
+        super(id);
         this.assetManager = assetManager;
         initTrainCrane();
     }

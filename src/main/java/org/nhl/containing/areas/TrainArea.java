@@ -38,7 +38,7 @@ public class TrainArea extends Area {
 
         // Add traincranes to the list and scene.
         for (int i = 0; i < cranes; i++) {
-            trainCranes.add(new TrainCrane(assetManager));
+            trainCranes.add(new TrainCrane(assetManager, -1));
             trainCranes.get(i).setLocalTranslation(craneXAxis, 0, 0);
             this.attachChild(trainCranes.get(i));
             craneXAxis += 30;

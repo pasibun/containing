@@ -22,7 +22,8 @@ public class TruckCrane extends Crane {
     private int containerPathUpCounter;
     private int containerPathDownCounter;
 
-    public TruckCrane(AssetManager assetManager) {
+    public TruckCrane(AssetManager assetManager, int id) {
+        super(id);
         this.assetManager = assetManager;
         initTruckCrane();
     }
