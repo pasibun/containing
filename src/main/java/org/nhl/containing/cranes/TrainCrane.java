@@ -57,6 +57,7 @@ public class TrainCrane extends Crane {
 
         MotionEvent motionControl = new MotionEvent(this, cranePath);
         motionControl.setDirectionType(MotionEvent.Direction.None);
+        motionControl.setSpeed(speed);
         motionControl.play();
         motionControl.dispose();
     }
@@ -78,6 +79,7 @@ public class TrainCrane extends Crane {
         
         MotionEvent motionControl = new MotionEvent(getChild(2), containerPath);
         motionControl.setDirectionType(MotionEvent.Direction.None);
+        motionControl.setSpeed(speed);
         motionControl.play();
     }
 

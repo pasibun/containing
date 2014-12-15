@@ -29,6 +29,7 @@ import org.nhl.containing.communication.messages.CreateMessage;
 import org.nhl.containing.communication.messages.Message;
 import org.nhl.containing.communication.messages.SpeedMessage;
 import org.nhl.containing.communication.Xml;
+import org.nhl.containing.cranes.Crane;
 import org.xml.sax.SAXException;
 
 /**
@@ -55,7 +56,8 @@ public class Simulation extends SimpleApplication {
     private Date currentDate;
     private long sumTime = Integer.MAX_VALUE;
     private long lastTime;
-    private final static int TIME_MULTIPLIER = 200;
+    private float speedMultiplier;
+    private float timeMultiplier = 1;
 
     public Simulation() {
         client = new Client();
@@ -190,10 +192,10 @@ public class Simulation extends SimpleApplication {
             if (poolTransporter.getId() == message.getTransporterId()) {
                 poolTransporter.setProcessingMessageId(message.getId());
                 rootNode.attachChild(poolTransporter);
+                poolTransporter.multiplySpeed(speedMultiplier);
                 poolTransporter.arrive(message.getDepotIndex());
-                
                 arriveMessages.add(message);
-                
+
                 exists = true;
                 break;
             }
@@ -230,34 +232,34 @@ public class Simulation extends SimpleApplication {
     }
 
     private void handleSpeedMessage(SpeedMessage message) {
-        speed = message.getSpeed();
+        speedMultiplier = message.getSpeed();
+        timeMultiplier = message.getSpeed();
+        changeCraneSpeed();
         sendOkMessage(message);
     }
 
     /**
-     * Checks wether a transporter has arrived and sends back an OK-message to the backend system.
+     * Checks wether a transporter has arrived and sends back an OK-message to
+     * the backend system.
      */
     private void handleArrival() {
-         Iterator<Transporter> itrTransporter = transporterPool.iterator();
+        Iterator<Transporter> itrTransporter = transporterPool.iterator();
         while (itrTransporter.hasNext()) {
             Transporter poolTransporter = itrTransporter.next();
-            if(poolTransporter.isArrived())
-            {
+            if (poolTransporter.isArrived()) {
                 Iterator<Message> itrMessage = arriveMessages.iterator();
-                while(itrMessage.hasNext())
-                { 
+                while (itrMessage.hasNext()) {
                     Message msg = itrMessage.next();
-                    if(msg.getId() == poolTransporter.getProcessingMessageId())
-                    {
+                    if (msg.getId() == poolTransporter.getProcessingMessageId()) {
                         sendOkMessage(msg);
                         transporters.add(poolTransporter);
                         itrTransporter.remove();
                         itrMessage.remove();
                     }
                 }
-                
+
             }
-            
+
         }
     }
 
@@ -270,17 +272,6 @@ public class Simulation extends SimpleApplication {
      */
     private void sendOkMessage(Message message) {
         client.writeMessage("<Ok><id>" + message.getId() + "</id></Ok>");
-    }
-
-    /**
-     * Reads the message object and creates and returns a Transporter from its
-     * information.
-     *
-     * @param message Create message.
-     * @return Transporter as described in the message.
-     */
-    private Transporter createTransporterFromMessage(Message message) {
-        return null;
     }
 
     /**
@@ -340,6 +331,19 @@ public class Simulation extends SimpleApplication {
         lastTime = System.currentTimeMillis();
     }
 
+    private void changeCraneSpeed() {
+        List<Crane> dockingCranes = new ArrayList<>();
+        dockingCranes.addAll(boatArea.getStorageCranes());
+        dockingCranes.addAll(lorryArea.getTruckCranes());
+        dockingCranes.addAll(trainArea.getTrainCranes());
+        dockingCranes.addAll(boatStorageArea.getStorageCranes());
+        dockingCranes.addAll(lorryStorageArea.getStorageCranes());
+        dockingCranes.addAll(trainStorageArea.getStorageCranes());
+        for (Crane crane : dockingCranes) {
+            crane.multiplySpeed(speedMultiplier);
+        }
+    }
+
     /**
      * Updates the simulation date.
      * <p/>
@@ -351,7 +355,7 @@ public class Simulation extends SimpleApplication {
         long curTime = System.currentTimeMillis();
         int deltaTime = (int) (curTime - lastTime);
         sumTime += deltaTime;
-        cal.add(Calendar.MILLISECOND, deltaTime * TIME_MULTIPLIER);
+        cal.add(Calendar.MILLISECOND, deltaTime * (int) timeMultiplier);
         currentDate = cal.getTime();
         lastTime = curTime;
 
@@ -374,7 +378,7 @@ public class Simulation extends SimpleApplication {
         initLighting();
         initAreas();
         initPlatform();
-        //testMethodCranes();
+        testMethodCranes();
     }
 
     private void initLighting() {
@@ -447,12 +451,15 @@ public class Simulation extends SimpleApplication {
                         debug = false;
                         Inlandship test = new Inlandship(assetManager, 0, new ArrayList());
                         rootNode.attachChild(test);
+                        test.multiplySpeed(speedMultiplier);
                         test.arrive(0);
                         Seaship test2 = new Seaship(assetManager, 0, new ArrayList());
                         rootNode.attachChild(test2);
+                        test2.multiplySpeed(speedMultiplier);
                         test2.arrive(0);
                         Train traintest = new Train(assetManager, 0, new ArrayList());
                         rootNode.attachChild(traintest);
+                        traintest.multiplySpeed(speedMultiplier);
                         traintest.arrive(0);
                         //testing train code
                         createAGVPath();

@@ -58,6 +58,7 @@ public class TruckCrane extends Crane {
 
         MotionEvent motionControl = new MotionEvent(this, cranePath);
         motionControl.setDirectionType(MotionEvent.Direction.None);
+        motionControl.setSpeed(speed);
         motionControl.play();
         motionControl.dispose();
     }
@@ -77,6 +78,7 @@ public class TruckCrane extends Crane {
 
         MotionEvent motionControl = new MotionEvent(container, containerPathUp);
         motionControl.setDirectionType(MotionEvent.Direction.None);
+        motionControl.setSpeed(speed);
         motionControl.play();
         motionControl.dispose();
     }
@@ -94,6 +96,7 @@ public class TruckCrane extends Crane {
         newCranePath.addListener(this);
         MotionEvent motionControl = new MotionEvent(this, newCranePath);
         motionControl.setDirectionType(MotionEvent.Direction.None);
+        motionControl.setSpeed(speed);
         motionControl.play();
         motionControl.dispose();
     }
@@ -113,6 +116,7 @@ public class TruckCrane extends Crane {
 
         MotionEvent motionControl = new MotionEvent(container, containerPathDown);
         motionControl.setDirectionType(MotionEvent.Direction.None);
+        motionControl.setSpeed(speed);
         motionControl.play();
 
         motionControl.dispose();

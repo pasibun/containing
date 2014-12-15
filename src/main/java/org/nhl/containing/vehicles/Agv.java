@@ -12,12 +12,12 @@ public class Agv extends Vehicle {
 
     private AssetManager assetManager;
     private Container container;
-    private float speed = 0.5f;
     private MotionPath path;
 
     public Agv(AssetManager assetManager, int id) {
         super(id);
         this.assetManager = assetManager;
+        speed = 0.5f;
         initAgv();
     }
 

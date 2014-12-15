@@ -1,7 +1,6 @@
 package org.nhl.containing.vehicles;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Quaternion;
@@ -17,7 +16,6 @@ import org.nhl.containing.Container;
 public class Seaship extends Transporter {
 
     private AssetManager assetManager;
-    private float speed = 0.5f;
     private List<Container> containerList;
     // zeeship Dit is x=0 Y=0 Z=0, links onderin ( als je vanaf de achterkant kijkt ) 
     // Hier passen op de x as 16 containers op
@@ -32,6 +30,7 @@ public class Seaship extends Transporter {
         super(id);
         this.assetManager = assetManager;
         this.containerList = containerList;
+        speed = 0.5f;
         initSeaship();
         initMotionPaths();
     }
@@ -64,7 +63,6 @@ public class Seaship extends Transporter {
     private void initMotionPaths() {
         path = new MotionPath();
         motionControl = new MotionEvent(this, path);
-        motionControl.setSpeed(speed);
         motionControl.setRotation(new Quaternion().fromAngleNormalAxis((float) Math.PI, Vector3f.UNIT_Y));
     }
 
@@ -75,6 +73,7 @@ public class Seaship extends Transporter {
      */
     @Override
     public void arrive(int location) {
+        motionControl.setSpeed(speed);
         path.clearWayPoints();
         path.addWayPoint(new Vector3f(-750, 0, 500));
         path.addWayPoint(new Vector3f(-330, 0, -20));
@@ -88,6 +87,7 @@ public class Seaship extends Transporter {
      */
     @Override
     public void depart() {
+        motionControl.setSpeed(speed);
         path.clearWayPoints();
         path.addWayPoint(new Vector3f(-330, 0, -20));
         path.addWayPoint(new Vector3f(-345, 0, -300));

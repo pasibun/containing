@@ -14,7 +14,6 @@ import org.nhl.containing.Container;
 public class Inlandship extends Transporter {
 
     private AssetManager assetManager;
-    private float speed = 0.5f;
     private List<Container> containerList;
     private BoundingBox boundingBox;
     private Spatial boat;
@@ -38,7 +37,7 @@ public class Inlandship extends Transporter {
             boat = assetManager.loadModel("Models/medium/ship/seaship.j3o");
             boat.scale(0.4f, 1, 0.37f);
             boundingBox = (BoundingBox) boat.getWorldBound();
-
+            speed = 0.5f;
             float inxAs = boundingBox.getXExtent();
             float inyAs = boundingBox.getZExtent() - 7;
             float inzAs = 0;
@@ -64,7 +63,6 @@ public class Inlandship extends Transporter {
     private void initMotionPaths() {
         path = new MotionPath();
         motionControl = new MotionEvent(this, path);
-        motionControl.setSpeed(speed);
         motionControl.setRotation(new Quaternion().fromAngleNormalAxis((float) Math.PI, Vector3f.UNIT_Y));
     }
 
@@ -75,6 +73,7 @@ public class Inlandship extends Transporter {
      */
     @Override
     public void arrive(int location) {
+        motionControl.setSpeed(speed);
         path.clearWayPoints();
         switch (location) {
             case 0:
@@ -101,6 +100,7 @@ public class Inlandship extends Transporter {
      */
     @Override
     public void depart() {
+        motionControl.setSpeed(speed);
         path.clearWayPoints();
         //if x coörd = -190 this inlandship is parked at the first(main) position
         if (this.getLocalTranslation().x == -190) {

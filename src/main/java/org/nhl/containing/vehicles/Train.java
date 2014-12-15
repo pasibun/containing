@@ -15,7 +15,6 @@ public class Train extends Transporter {
 
     private AssetManager assetManager;
     private int wagonZAxis = -11;
-    private float speed = 0.8f;
     private List<Container> trainContainerList;
     private MotionPath path;
     private MotionEvent motionControl;
@@ -24,6 +23,7 @@ public class Train extends Transporter {
         super(id);
         this.assetManager = assetManager;
         this.trainContainerList = trainContainerList;
+        speed = 0.8f;
         initTrain();
         initMotionPaths();
         this.rotate(new Quaternion().fromAngleAxis(FastMath.PI * 3 / 2, new Vector3f(0, 1, 0)));
@@ -58,7 +58,6 @@ public class Train extends Transporter {
     private void initMotionPaths() {
         path = new MotionPath();
         motionControl = new MotionEvent(this, path);
-        motionControl.setSpeed(speed);
     }
 
     /**
@@ -68,6 +67,7 @@ public class Train extends Transporter {
      */
     @Override
     public void arrive(int location) {
+        motionControl.setSpeed(speed);
         path.clearWayPoints();
         path.addWayPoint(new Vector3f(250, 0, -180));
         path.addWayPoint(new Vector3f(-200, 0, -180));
@@ -80,6 +80,7 @@ public class Train extends Transporter {
      */
     @Override
     public void depart() {
+        motionControl.setSpeed(speed);
         path.clearWayPoints();
         path.addWayPoint(new Vector3f(-200, 0, -180));
         path.addWayPoint(new Vector3f(250, 0, -180));

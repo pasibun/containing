@@ -9,6 +9,7 @@ public class Vehicle extends Node implements MotionPathListener {
     private int id;
     private int processingMessageId;
     private boolean arrived;
+    protected float speed;
 
     public Vehicle(int id) {
         super();
@@ -38,6 +39,11 @@ public class Vehicle extends Node implements MotionPathListener {
 
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public void multiplySpeed(float multiplier)
+    {
+        speed *= multiplier;
     }
 
     @Override
