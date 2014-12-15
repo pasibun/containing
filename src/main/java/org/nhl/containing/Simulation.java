@@ -152,7 +152,7 @@ public class Simulation extends SimpleApplication {
         List<Container> containers = new ArrayList<Container>();
         for (ContainerBean containerBean : message.getContainerBeans()) {
             Container container = new Container(assetManager, containerBean.getOwner(),
-                    containerBean.getIso(), containerBean.getxLoc(),
+                    containerBean.getContainerNr(), containerBean.getxLoc(),
                     containerBean.getyLoc(), containerBean.getzLoc());
             containers.add(container);
         }
@@ -378,7 +378,7 @@ public class Simulation extends SimpleApplication {
         initLighting();
         initAreas();
         initPlatform();
-        testMethodCranes();
+        //testMethodCranes();
     }
 
     private void initLighting() {
@@ -480,7 +480,7 @@ public class Simulation extends SimpleApplication {
         //TC test
         List<Container> containers = new ArrayList<Container>();
         for (int i = 0; i < 15; i++) {
-            containers.add(new Container(assetManager, "TEST CONTAINER", "8-9912", 0, 0, 0));
+            containers.add(new Container(assetManager, "TEST CONTAINER", 1, 0, 0, 0));
         }
         Train t = new Train(assetManager, -1, containers);
         t.setLocalTranslation(-180, 0, -180);
@@ -496,12 +496,12 @@ public class Simulation extends SimpleApplication {
         agv2.rotate(0, 0, 0);
         agv2.setLocalTranslation(140, 0, -125);
         rootNode.attachChild(agv2);
-        Container container1 = new Container(assetManager, "TEST CONTAINER", "8-9912", 0, 0, 0);
+        Container container1 = new Container(assetManager, "TEST CONTAINER", 2, 0, 0, 0);
         container1.setLocalTranslation(120, 0, 0);
         rootNode.attachChild(container1);
         trainStorageArea.getStorageCranes().get(0).storageToAgv(container1, agv2);
         //TruckCrane
-        Lorry lorry1 = new Lorry(assetManager, -1, new Container(assetManager, "TEST CONTAINER", "8-9912", 0, 0, 0));
+        Lorry lorry1 = new Lorry(assetManager, -1, new Container(assetManager, "TEST CONTAINER", 3, 0, 0, 0));
         lorry1.setLocalTranslation(300, 0, 170);
         rootNode.attachChild(lorry1);
         Agv agv4 = new Agv(assetManager, -1);
@@ -510,7 +510,7 @@ public class Simulation extends SimpleApplication {
         rootNode.attachChild(agv4);
         lorryArea.getTruckCranes().get(0).truckToAgv(lorry1.getChild(1), agv4);
         //DC test
-        Container container2 = new Container(assetManager, "TEST CONTAINER", "8-0002", 0, 0, 0);
+        Container container2 = new Container(assetManager, "TEST CONTAINER", 4, 0, 0, 0);
         container2.setLocalTranslation(-325, 0, 0);
         rootNode.attachChild(container2);
         Agv agv3 = new Agv(assetManager, -1);
@@ -520,7 +520,7 @@ public class Simulation extends SimpleApplication {
         boatArea.dockingCranes.get(0).boatToAgv(container2, agv3);
 
         //DC
-        Container container5 = new Container(assetManager, "TEST CONTAINER", "8-0002", 0, 0, 0);
+        Container container5 = new Container(assetManager, "TEST CONTAINER", 5, 0, 0, 0);
         container5.setLocalTranslation(-200, 0, 240);
         container5.rotate(0, (float) Math.PI / 2, 0);
         rootNode.attachChild(container5);

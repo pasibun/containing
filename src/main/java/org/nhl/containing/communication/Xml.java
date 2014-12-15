@@ -109,8 +109,8 @@ public class Xml {
                 String content = node.getTextContent();
 
                 switch (node.getNodeName()) {
-                    case "iso":
-                        containerBean.setIso(content);
+                    case "containerNr":
+                        containerBean.setContainerNr(Integer.parseInt(content));
                         break;
                     case "owner":
                         containerBean.setOwner(content);
