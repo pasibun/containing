@@ -212,6 +212,14 @@ public class Agv extends Vehicle {
 //        }
         return info + "\n";
     }
+    
+    public void addContainer(Container container){
+        this.container = container;
+    }
+    
+    public void removeContainer(){
+        this.container = null;
+    }
 
     /**
      * Gets all created waypoints

@@ -68,6 +68,14 @@ public class Lorry extends Transporter {
         path.addListener(this);
         motionControl.play();
     }
+    
+    public void addContainer(Container container){
+        this.container = container;
+    }
+    
+    public void removeContainer(){
+        this.container = null;
+    }
     /**
      * Debug method, displays object name, speed, amount of containers and it's
      * waypoints.
