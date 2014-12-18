@@ -75,7 +75,9 @@ public class Simulation extends SimpleApplication {
     private float speedMultiplier;
     private float timeMultiplier = 1;
     private final int MAXAGV = 144;
-    private List<Integer> countAgv;
+    private final int MAX_IDLE_AGV = 111;
+    private List<Float> agvIdleParkingX;
+    private List<Float> agvIdleParkingY;
     private List<Float> agvParkingX;
     private List<Float> agvParkingY;
 
@@ -89,7 +91,8 @@ public class Simulation extends SimpleApplication {
         departMessages = new ArrayList<>();
         transporters = new ArrayList<>();
         containerList = new ArrayList<>();
-        countAgv = new ArrayList<>();
+        agvIdleParkingX = new ArrayList<>();
+        agvIdleParkingY = new ArrayList<>();
         agvParkingX = new ArrayList<>();
         agvParkingY = new ArrayList<>();
     }
@@ -565,6 +568,7 @@ public class Simulation extends SimpleApplication {
         initAgvParkingTrain();
         initAgvParkingLorry();
         placeAgv();
+        initAgvIdle();
         
         //testMethodCranes();
     }
@@ -892,6 +896,18 @@ public class Simulation extends SimpleApplication {
     private void placeAgv() {
         for (int i = 0; i < MAXAGV; i++) {
             agvToParking(i);
+        }
+    }
+    
+    /**
+     * Initializes agv idle parking spots and adds to a list with 111 places
+     */
+    private void initAgvIdle() {
+        int agvIdleStartPoint = 72;
+        
+        for (int i = 1; i < MAX_IDLE_AGV + 1; i++) {
+           agvIdleParkingX.add((agvIdleStartPoint + (4.7f * i)));
+           agvIdleParkingY.add(-160f); 
         }
     }
 
