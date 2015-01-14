@@ -102,9 +102,10 @@ public class Simulation extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         guiFont = assetManager.loadFont("Interface/Fonts/TimesNewRoman.fnt");
+        speed = 5;
         setPauseOnLostFocus(false);
         initCam();
-//        initUserInput();
+        initUserInput();
         initScene();
         initDate();
         HUD = new HUD(this.guiNode, guiFont);
@@ -764,122 +765,91 @@ public class Simulation extends SimpleApplication {
         rootNode.attachChild(waterGeo);
     }
 
-    /*    private void initUserInput() {
-
-     inputManager.addMapping("debugmode", new KeyTrigger(KeyInput.KEY_P));
-     inputManager.addMapping("debugmode2", new KeyTrigger(KeyInput.KEY_O));
-     ActionListener acl = new ActionListener() {
-     @Override
-     public void onAction(String name, boolean keyPressed, float tpf) {
-     boolean debug = false;
-     Inlandship ship1 = null;
-     Inlandship ship2 = null;
-     if (name.equals("debugmode") && keyPressed) {
-     if (!debug) {
-     debug = !debug;
-     for (int i = 0; i < 144; i++) {
-     agvList.get(i).leaveStoragePlatform();
-     }
-     // Inlandship test = new Inlandship(assetManager, 0, new ArrayList());
-     // rootNode.attachChild(test);
-     // test.arrive(0);
-     // Seaship test2 = new Seaship(assetManager, 0, new ArrayList());
-     // rootNode.attachChild(test2);
-     // test2.arrive(0);
-     // Train traintest = new Train(assetManager, 0, new ArrayList());
-     // rootNode.attachChild(traintest);
-     // traintest.arrive(0);
-     ship1 = new Inlandship(assetManager, 0, new ArrayList());
-     ship2 = new Inlandship(assetManager, 0, new ArrayList());
-     rootNode.attachChild(ship1);
-     rootNode.attachChild(ship2);
-     ship1.arrive(0);
-     Agv agvtest = new Agv(assetManager, 0);
-     rootNode.attachChild(agvtest);
-     //char[] testarr = {'D', 'F', 'E', 'I'};
-     String testarr = "PQA";
-     agvtest.move(testarr);
-     //
-     ship2.arrive(1);
-     debug = false;
-     Inlandship test = new Inlandship(assetManager, 0, new ArrayList());
-     rootNode.attachChild(test);
-     test.multiplySpeed(speedMultiplier);
-     test.arrive(0);
-     Seaship test2 = new Seaship(assetManager, 0, new ArrayList());
-     rootNode.attachChild(test2);
-     test2.multiplySpeed(speedMultiplier);
-     test2.arrive(0);
-     Train traintest = new Train(assetManager, 0, new ArrayList());
-     rootNode.attachChild(traintest);
-     traintest.multiplySpeed(speedMultiplier);
-     traintest.arrive(0);
-     } else {
-     //System.out.println(ship1.getLocalTranslation());
-     debug = !debug;
-     ship1.depart();
-     ship2.depart();
-     }
-     agvtest = new Agv(assetManager, 0);
-     ship1 = new Inlandship(assetManager, 0, new ArrayList());
-     ship2 = new Inlandship(assetManager, 0, new ArrayList());
-     rootNode.attachChild(ship1);
-     rootNode.attachChild(ship2);
-     ship1.arrive(0);
-     rootNode.attachChild(agvtest);
-     String testarr = "F, N";
-     agvtest.move(testarr);
-     Lorry l = new Lorry(assetManager, 0, new Container(assetManager, "test", 0, 0, 0, 0));
-     rootNode.attachChild(l);
-     l.arrive(i);
-     agvtest.parkAtLorryPlatform(i);
-     i -= 1;
-     ship2.arrive(1);
-     debug = false;
-     Inlandship test = new Inlandship(assetManager, 0, new ArrayList());
-     rootNode.attachChild(test);
-     test.multiplySpeed(speedMultiplier);
-     test.arrive(0);
-     Seaship test2 = new Seaship(assetManager, 0, new ArrayList());
-     rootNode.attachChild(test2);
-     test2.multiplySpeed(speedMultiplier);
-     test2.arrive(0);
-     Train traintest = new Train(assetManager, 0, new ArrayList());
-     rootNode.attachChild(traintest);
-     traintest.multiplySpeed(speedMultiplier);
-     traintest.arrive(0);
-     } else if (name.equals("debugmode2") && keyPressed) {
-     //shipplatform agv testing
-     for (int i = 0; i < 24; i++) {
-     agvList.get(i).parkAtStoragePlatform(i);
-     }
-     for (int i = 24; i < 48; i++) {
-     agvList.get(i).parkAtStoragePlatform(i - 24);
-     }
-     //trainplatform agv testing
-     for (int i = 48; i < 72; i++) {
-     agvList.get(i).parkAtStoragePlatform(i - 48);
-     }
-     for (int i = 72; i < 96; i++) {
-     agvList.get(i).parkAtStoragePlatform(i - 72);
-     }
-     //lorryplatform agv testing
-     for (int i = 96; i < 120; i++) {
-     agvList.get(i).parkAtStoragePlatform(i - 96);
-     }
-     for (int i = 120; i < 144; i++) {
-     agvList.get(i).parkAtStoragePlatform(i - 120);
-     }
-     //System.out.println(ship1.getLocalTranslation());
-     ship1.depart();
-     ship2.depart();
-     agvtest.leaveLorryPlatform();
-     }
-     }
-     };
-     inputManager.addListener(acl, "debugmode");
-     inputManager.addListener(acl, "debugmode2");
-     }*/
+    boolean debug = false;
+    private void initUserInput() {
+        inputManager.addMapping("debugmode", new KeyTrigger(KeyInput.KEY_P));
+        inputManager.addMapping("debugmode2", new KeyTrigger(KeyInput.KEY_O));
+        inputManager.addMapping("debugmode3", new KeyTrigger(KeyInput.KEY_I));
+        ActionListener acl = new ActionListener() {
+            public void onAction(String name, boolean keyPressed, float tpf) {
+                if (name.equals("debugmode") && keyPressed) {
+                    if (!debug) {
+                        debug = false;
+                        Calendar cali = Calendar.getInstance();
+                        cali.set(Calendar.YEAR, 2004);
+                        cali.set(Calendar.MONTH, 1);
+                        cali.set(Calendar.DAY_OF_MONTH, 1);
+                        cali.set(Calendar.MINUTE, 0);
+                        cali.set(Calendar.HOUR_OF_DAY, 22);
+                        cali.set(Calendar.SECOND, 0);
+                        cali.set(Calendar.MILLISECOND, 0);
+                        Date datum = cali.getTime();
+                        Container testc = new Container(assetManager, "1 Januari", 0, 0, 0, 0, datum);
+                        testc.setLocalTranslation(boatStorageArea.getStorageCranes().get(3).getWorldTranslation().mult(1.1f));
+                        rootNode.attachChild(testc);
+                        boatStorageArea.getStorageCranes().get(3).agvToStorage(testc);
+                    } 
+                    
+                    
+                    
+                    else {
+                        debug = true;
+                    }
+                }
+                
+                if (name.equals("debugmode2") && keyPressed) {
+                    if (!debug) {
+                        debug = false;
+                        Calendar caly = Calendar.getInstance();
+                        caly.set(Calendar.YEAR, 2004);
+                        caly.set(Calendar.MONTH, 1);
+                        caly.set(Calendar.DAY_OF_MONTH, 2);
+                        caly.set(Calendar.MINUTE, 0);
+                        caly.set(Calendar.HOUR_OF_DAY, 22);
+                        caly.set(Calendar.SECOND, 0);
+                        caly.set(Calendar.MILLISECOND, 0);
+                        Date datums = caly.getTime();
+                        Container testc = new Container(assetManager, "2 Januari", 0, 0, 0, 0, datums);
+                        testc.setLocalTranslation(boatStorageArea.getStorageCranes().get(3).getWorldTranslation().mult(1.1f));
+                        rootNode.attachChild(testc);
+                        boatStorageArea.getStorageCranes().get(3).agvToStorage(testc);
+                    } 
+                    
+                    else {
+                        debug = true;
+                    }
+                }
+                
+                if (name.equals("debugmode3") && keyPressed) {
+                    if (!debug) {
+                        debug = false;
+                        Calendar calo = Calendar.getInstance();
+                        calo.set(Calendar.YEAR, 2004);
+                        calo.set(Calendar.MONTH, 1);
+                        calo.set(Calendar.DAY_OF_MONTH, 3);
+                        calo.set(Calendar.MINUTE, 0);
+                        calo.set(Calendar.HOUR_OF_DAY, 22);
+                        calo.set(Calendar.SECOND, 0);
+                        calo.set(Calendar.MILLISECOND, 0);
+                        Date datump = calo.getTime();
+                        Container testc = new Container(assetManager, "3 Januari", 0, 0, 0, 0, datump);
+                        testc.setLocalTranslation(boatStorageArea.getStorageCranes().get(3).getWorldTranslation().mult(1.1f));
+                        rootNode.attachChild(testc);
+                        boatStorageArea.getStorageCranes().get(3).agvToStorage(testc);
+                    } 
+                    
+                    else {
+                        debug = true;
+                    }
+                }
+                
+                
+            }
+        };
+        inputManager.addListener(acl, "debugmode");
+        inputManager.addListener(acl, "debugmode2");
+        inputManager.addListener(acl, "debugmode3");
+    }
     /**
      * Initializes the agv parking on the ship storage platform. The X and Y
      * locations are storred in an ArrayList. To trigger the 6th parking spot,

@@ -268,7 +268,7 @@ public class StorageCrane extends Crane {
                     detachChild(container);
                     storageArea.attachChild(container);
                     container.setLocalTranslation(position.subtract(storageArea.getWorldTranslation()));
-                    agv.removeContainer();
+                    //agv.removeContainer();
                     storageArea.addContainer(container);
                     break;
             }
