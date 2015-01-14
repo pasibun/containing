@@ -106,10 +106,10 @@ public class TrainCrane extends Crane {
 
         containerPathUpCounter = containerPathUp.getNbWayPoints();
         containerPathUp.setCurveTension(0.0f);
-//        containerPathUp.enableDebugShape(assetManager, this);
+//      containerPathUp.enableDebugShape(assetManager, this);
         containerPathUp.addListener(this);
 
-        MotionEvent motionControl = new MotionEvent(getChild(2), containerPathUp);
+        MotionEvent motionControl = new MotionEvent(getChild(1), containerPathUp);
         motionControl.setDirectionType(MotionEvent.Direction.None);
         motionControl.play();
     }
